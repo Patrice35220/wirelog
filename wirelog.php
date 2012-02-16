@@ -53,15 +53,13 @@
    }
 ?>
         // Create and draw the visualization.
-        new google.visualization.LineChart(document.getElementById('visualization')).
-            draw(data, {curveType: "function",
-                        width: 1000, height: 800,
+   var options = { curveType: "function", width: 1000, height: 800, interpolateNulls: true, 
 <?php
-            print("vAxis: {maxValue: $generalMax}}");
+            print("vAxis: {maxValue: $generalMax}};");
 ?>
-                );
+        new google.visualization.LineChart(document.getElementById('visualization')).
+            draw(data, options);
       }
-      
 
       google.setOnLoadCallback(drawVisualization);
     </script>
