@@ -33,6 +33,7 @@ function converToEpochMS($timestamp) {
 
 // Return an array, first element is timestamp
 function readTemperatureRecord($line) {
+   $line = trim($line); // remove end of line
    $res = explode(";", $line);
    return $res; 
 }
@@ -44,29 +45,35 @@ function readAllRecords($handle) {
    $line = fgets($handle);
    $k = 0;
    $j = 0;
+   $expectedNbOfRecords = detectNumberOfSensors($line);
+   $expectedNbOfRecords++;
    while ($line) {
       $record = readTemperatureRecord($line);
-      if (sizeof($record) > 1) { 
-         //$timestamp = array_shift($record);
-         //$i = 0;
-         //foreach($record as $field) {
-         //   $lines[$j][$i] = $field;
-         //   $i++;
-         //}
-         $lines[$j] = $record;
-         $j++;
-         //print"<p> record is : </p>";
-         //print_r($lines);
+      //if (sizeof($record) > 1) { 
+      if (sizeof($record) == $expectedNbOfRecords) { 
+         $numbers = 1; // first record is date != numeric
+         foreach($record as $element) {
+            if (is_numeric($element)) {
+               $numbers++;
+            }
+         }
+         // Record is taken into account only if it contains expectedNbOfRecords numbers;
+         // This filter out empty entries sometimes given by sensor
+         if ($numbers == $expectedNbOfRecords) {
+            $lines[$j] = $record;
+            $j++;
+         } else {
+            print("//numbers = $numbers");
+            print("//expectedNbOfRecords = $expectedNbOfRecords\n");
+         }
+      } else {
+         $tt = sizeof($record);
+         print("//sizeof(record) = $tt, expectedNbOfRecords=$expectedNbOfRecords\n");
       }
       $line = fgets($handle);
-      //$k++;
-      //if ($k > 100) {
-      //   break;
-      //}
    }
    if (sizeof($lines) > 1) {
       // make timestamp array, and one array per column
-      $j=0;
       $first=true;
       $nbOfColumns = 0; 
       foreach($lines as $line) {
@@ -84,7 +91,6 @@ function readAllRecords($handle) {
             }
          }
          $first = false;
-         $j++;
       }
       // convert string to array : a, b, c --> [{a}, {b}, {c}]
       for($i=0; $i<$nbOfColumns; $i++) {
