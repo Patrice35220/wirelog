@@ -10,27 +10,26 @@
    print("WireLog $day/$month/$year");
 ?>
     </title>
-
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
     <script type="text/javascript">
       google.load('visualization', '1', {packages: ['corechart']});
     </script>
     <script type="text/javascript">
       function drawVisualization() {
-        // Create and populate the data table.
-              var data = new google.visualization.DataTable();
+         // Create and populate the data table.
+         var data = new google.visualization.DataTable();
 <?php
    include("logFileParser.inc");
    include("settings.inc");
 
    $colors = array("black", "grey", "red", "orange", "BlueViolet", "green", "blue");
    $lines = generateXYForOneDay($day, $month, $year);
-   print("data.addColumn('datetime', 'time');\n");
+   print("         data.addColumn('datetime', 'time');\n");
    $nbOfLines=sizeof($lines);
    $nbOfMeasurements=sizeof($lines[0]);
    $generalMax=0;
    for($i=1; $i<$nbOfLines; $i++) {
-      print("data.addColumn('number', '$sensors[$i]');\n");
+      print("         data.addColumn('number', '$sensors[$i]');\n");
       for($j=0; $j<$nbOfMeasurements; $j++) {
          $value = $lines[$i][$j];
          if ($value > $generalMax) {
@@ -41,8 +40,7 @@
    //print("General max is $generalMax");
    for($i=0; $i<$nbOfMeasurements; $i++) {
       $value = $lines[0][$i];
-      print("data.addRow([new Date($value)");
-      //print("$value");
+      print("         data.addRow([new Date($value)");
       for($j=1; $j<sizeof($lines); $j++) {
          $value = $lines[$j][$i];
          print(", $value");
@@ -50,10 +48,10 @@
       print("]);\n");
    }
 ?>
-        // Create and draw the visualization.
-   var options = { curveType: "function", width: 1000, height: 800, interpolateNulls: true, 
+         // Create and draw the visualization.
+         var options = { curveType: "function", width: 1000, height: 800, interpolateNulls: true, 
 <?php
-            print("vAxis: {maxValue: $generalMax}};");
+   print("                         vAxis: {maxValue: $generalMax}};\n");
 ?>
          // Create a view (to be able to hide / show measurement)
          var view = new google.visualization.DataView(data);
@@ -70,7 +68,7 @@
    $day = date("d");
    $month = date("m");
    $year = date("y");
-   print("<H1><center>WireLog $day/$month/$year</center></H1>");
+   print("<H><center>WireLog $day/$month/$year</center></H>");
 ?>
     <div id="visualization" style="width: 1000px; height: 800px;"></div>
   </body>

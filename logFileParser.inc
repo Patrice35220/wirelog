@@ -63,12 +63,12 @@ function readAllRecords($handle) {
             $lines[$j] = $record;
             $j++;
          } else {
-            print("//numbers = $numbers");
-            print("//expectedNbOfRecords = $expectedNbOfRecords\n");
+            print("         //numbers = $numbers");
+            print("         //expectedNbOfRecords = $expectedNbOfRecords\n");
          }
       } else {
          $tt = sizeof($record);
-         print("//sizeof(record) = $tt, expectedNbOfRecords=$expectedNbOfRecords\n");
+         print("         //sizeof(record) = $tt, expectedNbOfRecords=$expectedNbOfRecords\n");
       }
       $line = fgets($handle);
    }
