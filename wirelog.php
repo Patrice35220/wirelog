@@ -55,8 +55,11 @@
 <?php
             print("vAxis: {maxValue: $generalMax}};");
 ?>
-        new google.visualization.LineChart(document.getElementById('visualization')).
-            draw(data, options);
+         // Create a view (to be able to hide / show measurement)
+         var view = new google.visualization.DataView(data);
+         //view.hideColumns([3,4]);
+
+         new google.visualization.LineChart(document.getElementById('visualization')).draw(view, options);
       }
 
       google.setOnLoadCallback(drawVisualization);
