@@ -2,14 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <title>
 <?php
    $day = date("d");
    $month = date("m");
    $year = date("y");
-   print("WireLog $day/$month/$year");
+   $graphTitle="Wirelog ".$day."/".$month."/".$year;
+   //print("WireLog $day/$month/$year");
 ?>
-    </title>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
     <script type="text/javascript">
       google.load('visualization', '1', {packages: ['corechart']});
@@ -51,7 +50,8 @@
          // Create and draw the visualization.
          var options = { curveType: "function", width: 1000, height: 800, interpolateNulls: true, 
 <?php
-   print("                         vAxis: {maxValue: $generalMax}};\n");
+   print("                         title: '$graphTitle',\n");
+   print("                         vAxis: {maxValue: $generalMax, title:'Temperatures', gridlines:{count:10}}};\n");
 ?>
          // Create a view (to be able to hide / show measurement)
          var view = new google.visualization.DataView(data);
@@ -65,10 +65,10 @@
   </head>
   <body style="font-family: Arial;border: 0 none;">
 <?php
-   $day = date("d");
-   $month = date("m");
-   $year = date("y");
-   print("<H><center>WireLog $day/$month/$year</center></H>");
+   //$day = date("d");
+   //$month = date("m");
+   //$year = date("y");
+   //print("<H><center>WireLog $day/$month/$year</center></H>");
 ?>
     <div id="visualization" style="width: 1000px; height: 800px;"></div>
   </body>
