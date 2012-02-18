@@ -19,7 +19,6 @@
          // Create and populate the data table.
          var data = new google.visualization.DataTable();
 <?php
-   include_once("utils.inc"
    include_once("logFileParser.inc");
    include_once("settings.inc");
 
