@@ -19,8 +19,9 @@
          // Create and populate the data table.
          var data = new google.visualization.DataTable();
 <?php
-   include("logFileParser.inc");
-   include("settings.inc");
+   include_once("utils.inc"
+   include_once("logFileParser.inc");
+   include_once("settings.inc");
 
    $colors = array("black", "grey", "red", "orange", "BlueViolet", "green", "blue");
    $lines = generateXYForOneDay($day, $month, $year);

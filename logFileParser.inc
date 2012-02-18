@@ -1,4 +1,5 @@
 <?php
+include_once("utils.inc");
 
 function detectNumberOfSensors($line) {
    $tokens = explode(";", $line);
@@ -7,28 +8,6 @@ function detectNumberOfSensors($line) {
    } else {
       return 0;
    }
-}
-
-function converTimeToSeconds($timestamp) {
-   list($date, $time) = explode("/", $timestamp);
-   list($hour, $min) = explode(":", $time);
-   return ($hour * 3600 + $min * 60);
-}
-
-function converDateTimeToTime($timestamp) {
-   list($date, $time) = explode("/", $timestamp);
-   return ($time.":00");
-}
-
-function converToEpochMS($timestamp) {
-   list($date, $time) = explode("/", $timestamp);
-   list($day, $month, $year) = explode(".", $date);
-   list($hour, $min) = explode(":", $time);
-   $t = mktime($hour, $min, 0, $month, $day, $year, -1);
-   // +date("Z") is used to realigned UTC time to server timezone
-   $t = $t + date("Z");
-   $t = $t * 1000; // in ms
-   return ($t);
 }
 
 // Return an array, first element is timestamp
