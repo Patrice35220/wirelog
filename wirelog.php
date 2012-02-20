@@ -53,7 +53,20 @@
          options = { curveType: "function", width: 1000, height: 800, interpolateNulls: true, 
 <?php
    print("                         title: '$graphTitle',\n");
-   print("                         vAxis: {maxValue: $generalMax, title:'Temperatures', gridlines:{count:10}}};\n");
+   print("                         vAxis: {maxValue: $generalMax, title:'Temperatures', gridlines:{count:10}}\n");
+   $first = true;
+   print("                         , colors:[");
+   for($i=1; $i<$nbOfLines; $i++) {
+      if ($first) {
+         print("'$colors[$i]'");
+         $first=false;
+      } else {
+         print(",'$colors[$i]'");
+      } 
+   }
+   print("]\n");
+
+   print("          };\n");
 ?>
          // Create a view (to be able to hide / show measurement)
          view = new google.visualization.DataView(data);
@@ -65,7 +78,6 @@
       function clickOnSensor() {
 <?php
       $listOfColumns="[0";
-      $first = true;
       for($i=1; $i<$nbOfLines; $i++) {
          $listOfColumns = $listOfColumns.",".$i;
       }
@@ -74,6 +86,8 @@
       for($i=1; $i<$nbOfLines; $i++) {
          print("         if (document.getElementById('buttonSensor$i').checked == 0) {\n"); 
          print("            view.hideColumns([$i]);\n");
+         print("         } else {\n"); 
+         print("            // Push back color in colorOption \n");
          print("         }\n"); 
       }
       print("         var linechart = new google.visualization.LineChart(document.getElementById('visualization')).draw(view, options);\n");
