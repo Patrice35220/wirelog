@@ -14,6 +14,8 @@
       google.load('visualization', '1', {packages: ['corechart']});
     </script>
     <script type="text/javascript">
+      var view;
+      var options;
       function drawVisualization() {
          // Create and populate the data table.
          var data = new google.visualization.DataTable();
@@ -48,28 +50,63 @@
    }
 ?>
          // Create and draw the visualization.
-         var options = { curveType: "function", width: 1000, height: 800, interpolateNulls: true, 
+         options = { curveType: "function", width: 1000, height: 800, interpolateNulls: true, 
 <?php
    print("                         title: '$graphTitle',\n");
    print("                         vAxis: {maxValue: $generalMax, title:'Temperatures', gridlines:{count:10}}};\n");
 ?>
          // Create a view (to be able to hide / show measurement)
-         var view = new google.visualization.DataView(data);
+         view = new google.visualization.DataView(data);
          //view.hideColumns([3,4]);
 
-         new google.visualization.LineChart(document.getElementById('visualization')).draw(view, options);
+         var linechart = new google.visualization.LineChart(document.getElementById('visualization')).draw(view, options);
       }
+
+      function clickOnSensor() {
+<?php
+      $listOfColumns="[0";
+      $first = true;
+      for($i=1; $i<$nbOfLines; $i++) {
+         $listOfColumns = $listOfColumns.",".$i;
+      }
+      $listOfColumns = $listOfColumns."]";
+      print("         view.setColumns($listOfColumns);\n"); 
+      for($i=1; $i<$nbOfLines; $i++) {
+         print("         if (document.getElementById('buttonSensor$i').checked == 0) {\n"); 
+         print("            view.hideColumns([$i]);\n");
+         print("         }\n"); 
+      }
+      print("         var linechart = new google.visualization.LineChart(document.getElementById('visualization')).draw(view, options);\n");
+?>
+      }
+
+<?php
+   //for($i=1; $i<$nbOfLines; $i++) {
+   //   print("      function clickOnSensor$i() {\n");
+   //   print("         if (document.getElementById('buttonSensor$i').checked == 1) {\n"); 
+   //   print("            view.showColumns([$i]);\n");
+   //   print("         } else {\n");
+   //   print("            view.hideColumns([$i]);\n");
+   //   print("         }\n"); 
+   //   print("         var linechart = new google.visualization.LineChart(document.getElementById('visualization')).draw(view, options);\n");
+   //   print("      }");
+   //}
+?>
 
       google.setOnLoadCallback(drawVisualization);
     </script>
   </head>
   <body style="font-family: Arial;border: 0 none;">
+   <div id="main" style="width:1200px; height.800px; position:relative;">
+      <div id="menu" style="width:200px;height:800px;float:left;">
 <?php
-   //$day = date("d");
-   //$month = date("m");
-   //$year = date("y");
-   //print("<H><center>WireLog $day/$month/$year</center></H>");
+   for($i=1; $i<$nbOfLines; $i++) {
+      print("         <p><input id=buttonSensor$i type='checkbox' checked='checked' onclick='clickOnSensor()' />$sensors[$i]</p>\n");
+   }
 ?>
-    <div id="visualization" style="width: 1000px; height: 800px;"></div>
+      </div>
+      <div id="visualization" style="width: 1000px; height:800px; position:relative;float:right;"></div>
+   </div>
+
   </body>
 </html>
