@@ -16,6 +16,7 @@
     <script type="text/javascript">
       var view;
       var options;
+      var maximumValues=new Array();
       function drawVisualization() {
          // Create and populate the data table.
          var data = new google.visualization.DataTable();
@@ -27,14 +28,25 @@
    print("         data.addColumn('datetime', 'time');\n");
    $nbOfLines=sizeof($lines);
    $nbOfMeasurements=sizeof($lines[0]);
-   $generalMax=0;
+   for($i=1; $i<$nbOfLines; $i++) {
+      $maxSensor[$i] = -272;
+   }
    for($i=1; $i<$nbOfLines; $i++) {
       print("         data.addColumn('number', '$sensors[$i]');\n");
       for($j=0; $j<$nbOfMeasurements; $j++) {
          $value = $lines[$i][$j];
-         if ($value > $generalMax) {
-            $generalMax = $value;
+         // Calculate max value per sensor
+         if ($value > $maxSensor[$i]) {
+            $maxSensor[$i] = $value;
          }
+      }
+   }
+   $generalMax=-272;
+      print("         maximumValues.push(0);\n"); // No sensor 0
+   for($i=1; $i<$nbOfLines; $i++) {
+      print("         maximumValues.push($maxSensor[$i]);\n");
+      if ($maxSensor[$i] > $generalMax) {
+         $generalMax = $maxSensor[$i];
       }
    }
    //print("General max is $generalMax");
@@ -81,6 +93,7 @@
       }
       $listOfColumns = $listOfColumns."]";
       print("         var updatedColors = new Array();\n");
+      print("         var maxTemperature=-272;\n");
       print("         view.setColumns($listOfColumns);\n"); 
       for($i=1; $i<$nbOfLines; $i++) {
          print("         if (document.getElementById('buttonSensor$i').checked == 0) {\n"); 
@@ -88,9 +101,13 @@
          print("         } else {\n"); 
          print("            // Push back color in colorOption \n");
          print("            updatedColors.push('$colors[$i]');\n");
+         print("            if (maximumValues[$i] > maxTemperature) {\n");
+         print("               maxTemperature = maximumValues[$i];\n");  
+         print("            }\n");
          print("         }\n"); 
       }
       print("         options.colors=updatedColors;\n"); 
+      print("         options.vAxis.maxValue=maxTemperature;\n"); 
       print("         var linechart = new google.visualization.LineChart(document.getElementById('visualization')).draw(view, options);\n");
 ?>
       }
