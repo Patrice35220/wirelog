@@ -120,7 +120,7 @@
       <div id="menu" style="width:200px;height:800px;float:left;">
 <?php
    for($i=1; $i<$nbOfLines; $i++) {
-      print("         <p><input id=buttonSensor$i type='checkbox' checked='checked' onclick='clickOnSensor()' />$sensors[$i]</p>\n");
+      print("         <p style=\"color:$colors[$i]\"><input id=buttonSensor$i type='checkbox' checked='checked' onclick='clickOnSensor()' />$sensors[$i]</p>\n");
    }
 ?>
       </div>
