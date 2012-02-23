@@ -69,7 +69,6 @@
 ?>
          // Create a view (to be able to hide / show measurement)
          view = new google.visualization.DataView(data);
-         //view.hideColumns([3,4]);
 
          var linechart = new google.visualization.LineChart(document.getElementById('visualization')).draw(view, options);
       }
@@ -81,30 +80,20 @@
          $listOfColumns = $listOfColumns.",".$i;
       }
       $listOfColumns = $listOfColumns."]";
+      print("         var updatedColors = new Array();\n");
       print("         view.setColumns($listOfColumns);\n"); 
       for($i=1; $i<$nbOfLines; $i++) {
          print("         if (document.getElementById('buttonSensor$i').checked == 0) {\n"); 
          print("            view.hideColumns([$i]);\n");
          print("         } else {\n"); 
          print("            // Push back color in colorOption \n");
+         print("            updatedColors.push('$colors[$i]');\n");
          print("         }\n"); 
       }
+      print("         options.colors=updatedColors;\n"); 
       print("         var linechart = new google.visualization.LineChart(document.getElementById('visualization')).draw(view, options);\n");
 ?>
       }
-
-<?php
-   //for($i=1; $i<$nbOfLines; $i++) {
-   //   print("      function clickOnSensor$i() {\n");
-   //   print("         if (document.getElementById('buttonSensor$i').checked == 1) {\n"); 
-   //   print("            view.showColumns([$i]);\n");
-   //   print("         } else {\n");
-   //   print("            view.hideColumns([$i]);\n");
-   //   print("         }\n"); 
-   //   print("         var linechart = new google.visualization.LineChart(document.getElementById('visualization')).draw(view, options);\n");
-   //   print("      }");
-   //}
-?>
 
       google.setOnLoadCallback(drawVisualization);
     </script>
