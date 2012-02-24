@@ -62,10 +62,11 @@
 ?>
          // Create and draw the visualization.
          options = { curveType: "function", interpolateNulls: true, 
+                     chartArea:{left:50,top:50, width:"90%", height:"75%"},
 <?php
-   print("                         title: '$graphTitle',\n");
-   print("                         legend: 'none',\n");
-   print("                         vAxis: {maxValue: $generalMax, title:'Temperatures', gridlines:{count:10}}\n");
+   print("                     title: '$graphTitle',\n");
+   print("                     legend: 'none',\n");
+   print("                     vAxis: {maxValue: $generalMax, title:'Temperatures', gridlines:{count:10}}\n");
    $first = true;
    print("                         , colors:[");
    for($i=1; $i<$nbOfLines; $i++) {
@@ -117,9 +118,9 @@
     </script>
   </head>
   <body style="font-family: Arial;border: 0 none;">
-   <div id="container" style="width:1200px; height.800px; position:relative;">
-      <div id="visualization" style="width: 1000px; height:800px; float:left;"></div>
-      <div id="menu" style="width:200px;height:800px;position:relative;float:right;">
+   <div id="container" style="width:1000px; height.750px; position:relative;">
+      <div id="visualization" style="width: 800px; height:750px; float:left;"></div>
+      <div id="menu" style="width:200px;height:750px;position:relative;float:right;">
 <?php
    for($i=1; $i<$nbOfLines; $i++) {
       print("         <p style=\"color:$colors[$i]\"><input id=buttonSensor$i type='checkbox' checked='checked' onclick='clickOnSensor()' />$sensors[$i]</p>\n");
