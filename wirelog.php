@@ -64,6 +64,7 @@
          options = { curveType: "function", interpolateNulls: true, 
 <?php
    print("                         title: '$graphTitle',\n");
+   print("                         legend: 'none',\n");
    print("                         vAxis: {maxValue: $generalMax, title:'Temperatures', gridlines:{count:10}}\n");
    $first = true;
    print("                         , colors:[");
@@ -116,15 +117,15 @@
     </script>
   </head>
   <body style="font-family: Arial;border: 0 none;">
-   <div id="main" style="width:1000px; height.800px; position:relative;">
-      <div id="menu" style="width:200px;height:800px;float:left;">
+   <div id="container" style="width:1200px; height.800px; position:relative;">
+      <div id="visualization" style="width: 1000px; height:800px; float:left;"></div>
+      <div id="menu" style="width:200px;height:800px;position:relative;float:right;">
 <?php
    for($i=1; $i<$nbOfLines; $i++) {
       print("         <p style=\"color:$colors[$i]\"><input id=buttonSensor$i type='checkbox' checked='checked' onclick='clickOnSensor()' />$sensors[$i]</p>\n");
    }
 ?>
       </div>
-      <div id="visualization" style="width: 800px; height:600px; position:relative;float:right;"></div>
    </div>
 
   </body>
