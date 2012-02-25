@@ -118,9 +118,9 @@
     </script>
   </head>
   <body style="font-family: Arial;border: 0 none;">
-   <div id="container" style="width:1000px; height.750px; position:relative;">
-      <div id="visualization" style="width: 800px; height:750px; float:left;"></div>
-      <div id="menu" style="width:200px;height:750px;position:relative;float:right;">
+   <div id="container" style="width:840px; height.480px; position:relative;">
+      <div id="visualization" style="width: 640px; height:480px; float:left;"></div>
+      <div id="menu" style="width:200px;height:480px;position:relative;float:right;">
 <?php
    for($i=1; $i<$nbOfLines; $i++) {
       print("         <p style=\"color:$colors[$i]\"><input id=buttonSensor$i type='checkbox' checked='checked' onclick='clickOnSensor()' />$sensors[$i]</p>\n");
