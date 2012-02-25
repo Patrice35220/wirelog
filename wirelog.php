@@ -7,7 +7,6 @@
    $month = date("m");
    $year = date("y");
    $graphTitle="Wirelog ".$day."/".$month."/".$year;
-   //print("WireLog $day/$month/$year");
 ?>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
     <script type="text/javascript">
@@ -17,22 +16,22 @@
       var view;
       var options;
       var maximumValues=new Array();
+      // Create the data table.
+      var data = new google.visualization.DataTable();
       function drawVisualization() {
-         // Create and populate the data table.
-         var data = new google.visualization.DataTable();
 <?php
    include_once("logFileParser.inc");
    include_once("settings.inc");
 
+   // Read data and in order to generate maximum values (TODO maybe to be changed...)
    $lines = generateXYForOneDay($day, $month, $year);
-   print("         data.addColumn('datetime', 'time');\n");
+
    $nbOfLines=sizeof($lines);
    $nbOfMeasurements=sizeof($lines[0]);
    for($i=1; $i<$nbOfLines; $i++) {
       $maxSensor[$i] = -272;
    }
    for($i=1; $i<$nbOfLines; $i++) {
-      print("         data.addColumn('number', '$sensors[$i]');\n");
       for($j=0; $j<$nbOfMeasurements; $j++) {
          $value = $lines[$i][$j];
          // Calculate max value per sensor
@@ -42,22 +41,19 @@
       }
    }
    $generalMax=-272;
-      print("         maximumValues.push(0);\n"); // No sensor 0
+   print("         maximumValues.push(0);\n"); // No sensor 0
    for($i=1; $i<$nbOfLines; $i++) {
       print("         maximumValues.push($maxSensor[$i]);\n");
       if ($maxSensor[$i] > $generalMax) {
          $generalMax = $maxSensor[$i];
       }
    }
-   //print("General max is $generalMax");
+
    for($i=0; $i<$nbOfMeasurements; $i++) {
       $value = $lines[0][$i];
-      print("         data.addRow([new Date($value)");
       for($j=1; $j<sizeof($lines); $j++) {
          $value = $lines[$j][$i];
-         print(", $value");
       }
-      print("]);\n");
    }
 ?>
          // Create and draw the visualization.
@@ -81,10 +77,24 @@
 
    print("          };\n");
 ?>
+         // Make a Query to datasource
          // Create a view (to be able to hide / show measurement)
-         view = new google.visualization.DataView(data);
+         var query = new google.visualization.Query('http://patrice.den.free.fr/wirelog/datasource.php');
+  
+         // Send the query with a callback function.
+         query.send(handleQueryResponse);
+      }
 
-         var linechart = new google.visualization.LineChart(document.getElementById('visualization')).draw(view, options);
+      function handleQueryResponse(response) {
+         if (response.isError()) {
+            alert('Error in query');
+            return;
+         } else {
+            data = response.getDataTable();
+            view = new google.visualization.DataView(data);
+            var linechart = new google.visualization.LineChart(document.getElementById('visualization'));
+            linechart.draw(view, options);
+         }
       }
 
       function clickOnSensor() {

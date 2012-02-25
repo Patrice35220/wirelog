@@ -2,24 +2,46 @@
    include_once("logFileParser.inc");
    include_once("settings.inc");
 
-   $reqId = $_GET["reqId"];
+   // Debug 
+   // $fd = fopen("testLog", "w");
+   // fputs($fd, "datasource req Received\n");
+   // foreach($_GET as $key => $i){
+   //   fputs($fd, "$key=$_GET[$key]\n");
+   // }
+   // fclose($fd);
+
+   // Parse request
+   $tqx = $_GET["tqx"];
+   $tokens = explode(",", $tqx);
+   for($i=0; $i<sizeof($tokens); $i++) {
+      $pos=strpos($tokens[$i], "reqId");
+      if ($pos !== false) {
+         $subTokens = explode(":", $tokens[$i]);
+         if (sizeof($subTokens) > 1) {
+            $reqId=$subTokens[1];
+            break;
+         }
+      }
+   }
+
+   // Get sensors values for 'today'
    $day = date("d");
    $month = date("m");
    $year = date("y");
    $lines = generateXYForOneDay($day, $month, $year);
+
+   // Encode response as JSON 
    $response = "{version:'0.6'";
    // set reqId in response if it is present in request
    if ($reqId != "") {
       $response = $response.",reqId:'".$reqId."'";
    }
    // Add columns
-   $response = $response.",status:'ok',table:{cols:[{id:'time', label:'', type:'datetime'}";
-   //print("         data.addColumn('datetime', 'time');\n");
+   $response = $response.",status:'ok',table:{cols:[{label:'time', type:'datetime'}";
    $nbOfLines=sizeof($lines);
    $nbOfMeasurements=sizeof($lines[0]);
    for($i=1; $i<$nbOfLines; $i++) {
-      $response = $response.",{id:'$sensors[$i]', label:'', type:'number'}";
-      //print("         data.addColumn('number', '$sensors[$i]');\n");
+      $response = $response.",{label:'$sensors[$i]', type:'number'}";
    }
    // end columns array
    $response = $response."]";
@@ -31,14 +53,11 @@
          $response = $response.",";
       }
       $response = $response."{c:[{v:new Date($value)}"; // datetime
-      //print("         data.addRow([new Date($value)");
       for($j=1; $j<sizeof($lines); $j++) {
          $value = $lines[$j][$i];
-         $response = $response.",{$value}";
-         //print(", $value");
+         $response = $response.",{v:$value}";
       }
       $response = $response."]}";
-      //print("]);\n");
    }
    $response = $response."]"; // end of rows
    $response = $response."}"; // end of table
