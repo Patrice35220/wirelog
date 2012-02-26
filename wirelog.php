@@ -102,8 +102,8 @@
          } else {
             data = response.getDataTable();
             view = new google.visualization.DataView(data);
-            var linechart = new google.visualization.LineChart(document.getElementById('visualization'));
-            linechart.draw(view, options);
+            // Process in same way as clickOnSensor button, so, hidden sensors remain hidden
+            clickOnSensor();
             t=setTimeout("resendQuery()",60000);
          }
       }
