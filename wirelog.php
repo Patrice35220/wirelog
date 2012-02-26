@@ -18,6 +18,9 @@
       var maximumValues=new Array();
       // Create the data table.
       var data = new google.visualization.DataTable();
+      var query;
+      var t;
+
       function drawVisualization() {
 <?php
    include_once("logFileParser.inc");
@@ -79,21 +82,29 @@
 ?>
          // Make a Query to datasource
          // Create a view (to be able to hide / show measurement)
-         var query = new google.visualization.Query('http://patrice.den.free.fr/wirelog/datasource.php');
-  
+         query = new google.visualization.Query('http://patrice.den.free.fr/wirelog/datasource.php');
+         query.setQuery('select:today');
+         //query.setRefreshInterval(20); // not working
          // Send the query with a callback function.
          query.send(handleQueryResponse);
       }
 
+      function resendQuery()
+      {
+         query.send(handleQueryResponse);
+      }
+
       function handleQueryResponse(response) {
-         if (response.isError()) {
-            alert('Error in query');
+         if (response.hasWarning()) {
+            // No data
+            t=setTimeout("resendQuery()",30000);
             return;
          } else {
             data = response.getDataTable();
             view = new google.visualization.DataView(data);
             var linechart = new google.visualization.LineChart(document.getElementById('visualization'));
             linechart.draw(view, options);
+            t=setTimeout("resendQuery()",30000);
          }
       }
 
