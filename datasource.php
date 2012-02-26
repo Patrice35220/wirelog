@@ -13,10 +13,10 @@
       if ($reqId != "") {
          $response = $response.",reqId:'".$reqId."'";
       }
-      // as hash value, we return the number of lines
+      // as hash value, we return the number of measurements
       // The client will use it when asking live data. It can be used
       // to detect that new data are available
-      $response = $response.",sig:'$nbOfLines'";
+      $response = $response.",sig:'$nbOfMeasurements'";
       // Add columns
       $response = $response.",status:'ok',table:{cols:[{label:'time', type:'datetime'}";
       for($i=1; $i<$nbOfLines; $i++) {
@@ -45,7 +45,7 @@
       return $response;
    }
 
-   function answerTableHasNotChanged($reqId, $nbOfLines) {
+   function answerTableHasNotChanged($reqId, $nbOfMeasurements) {
 
       // Encode response as JSON 
       $response = "{version:'0.6'";
@@ -56,20 +56,20 @@
       // as hash value, we return the number of lines
       // The client will use it when asking live data. It can be used
       // to detect that new data are available
-      $response = $response.",sig:'$nbOfLines'";
+      $response = $response.",sig:'$nbOfMeasurements'";
       // Add columns
-      $response = $response.",status:'warning', warnings:[{reason='other'}]}";
+      $response = $response.",status:'warning', warnings:[{reason:'other'}]}";
       //$response = $response.",status:'error'}";
 
       return $response;
    }
 
    // Debug 
-   $fd = fopen("testLog", "a");
-   fputs($fd, "datasource req Received\n");
-   foreach($_GET as $key => $i){
-     fputs($fd, "$key=$_GET[$key]\n");
-   }
+   //$fd = fopen("testLog", "a");
+   //fputs($fd, "datasource req Received\n");
+   //foreach($_GET as $key => $i){
+   //  fputs($fd, "$key=$_GET[$key]\n");
+   //}
 
    $select = "";
    $reqId = "";
@@ -113,11 +113,10 @@
    }
 
    // Debug
-   fputs($fd, "reqId = $reqId\n");
-   fputs($fd, "sig = $sig\n");
-   fputs($fd, "select = $select\n");
-   fclose($fd);
-
+   //fputs($fd, "reqId = $reqId\n");
+   //fputs($fd, "sig = $sig\n");
+   //fputs($fd, "select = $select\n");
+   //fclose($fd);
 
    // Get sensors values for 'today'
    if ($select == "today") {
@@ -126,11 +125,10 @@
       $year = date("y");
       $lines = generateXYForOneDay($day, $month, $year);
 
-      $nbOfLines=sizeof($lines);
-      if ($sig == $nbOfLines) {
+      $nbOfMeasurements=sizeof($lines[0]);
+      if ($sig == $nbOfMeasurements) {
          // table has not changed
-         //$response = answerTableHasNotChanged($reqId, $nbOfLines);
-         $response = answerToday($reqId, $lines);
+         $response = answerTableHasNotChanged($reqId, $nbOfMeasurements);
       } else {
          $response = answerToday($reqId, $lines);
       }

@@ -97,14 +97,14 @@
       function handleQueryResponse(response) {
          if (response.hasWarning()) {
             // No data
-            t=setTimeout("resendQuery()",30000);
+            t=setTimeout("resendQuery()",60000);
             return;
          } else {
             data = response.getDataTable();
             view = new google.visualization.DataView(data);
             var linechart = new google.visualization.LineChart(document.getElementById('visualization'));
             linechart.draw(view, options);
-            t=setTimeout("resendQuery()",30000);
+            t=setTimeout("resendQuery()",60000);
          }
       }
 
