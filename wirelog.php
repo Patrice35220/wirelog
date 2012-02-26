@@ -82,7 +82,10 @@
 ?>
          // Make a Query to datasource
          // Create a view (to be able to hide / show measurement)
-         query = new google.visualization.Query('http://patrice.den.free.fr/wirelog/datasource.php');
+<?php
+         // $datasource is set in settings
+         print("         query = new google.visualization.Query('$datasource');\n");
+?>
          query.setQuery('select:today');
          //query.setRefreshInterval(20); // not working
          // Send the query with a callback function.
