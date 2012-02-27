@@ -15,7 +15,6 @@
     <script type="text/javascript">
       var view;
       var options;
-      var maximumValues=new Array();
       // Create the data table.
       var data = new google.visualization.DataTable();
       var query;
