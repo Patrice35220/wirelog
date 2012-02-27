@@ -98,7 +98,7 @@
       }
 
       function handleQueryResponse(response) {
-         if (response.hasWarning()) {
+         if (response.hasWarning() ||response.isError()) {
             // No data
             t=setTimeout("resendQuery()",60000);
             return;
@@ -146,6 +146,7 @@
       <div id="visualization" style="width: 640px; height:480px; float:left;"></div>
       <div id="menu" style="width:200px;height:480px;position:relative;float:right;">
 <?php
+   $sensors = getSensorsLabels();
    for($i=1; $i<$nbOfLines; $i++) {
       print("         <p style=\"color:$colors[$i]\"><input id=buttonSensor$i type='checkbox' checked='checked' onclick='clickOnSensor()' />$sensors[$i]</p>\n");
    }

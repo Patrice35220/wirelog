@@ -7,6 +7,8 @@
       $nbOfLines=sizeof($lines);
       $nbOfMeasurements=sizeof($lines[0]);
 
+      $sensors = getSensorsLabels();
+
       // Encode response as JSON 
       $response = "{version:'0.6'";
       // set reqId in response if it is present in request
@@ -28,12 +30,14 @@
       $response = $response.",rows:[";
       for($i=0; $i<$nbOfMeasurements; $i++) {
          $value = $lines[0][$i];
+         $value = trim($value);
          if ($i>0) {
             $response = $response.",";
          }
          $response = $response."{c:[{v:new Date($value)}"; // datetime
          for($j=1; $j<sizeof($lines); $j++) {
             $value = $lines[$j][$i];
+            $value = trim($value);
             $response = $response.",{v:$value}";
          }
          $response = $response."]}";
