@@ -144,9 +144,9 @@
    } else {
       $tokens = explode(" ", $select);
       if (sizeof($tokens) == 4) {
-         if ($token[0] == "from" && $token[2] == "to") {
-            $startDate = $token[1];
-            $endDate = $token[3];
+         if ($tokens[0] == "from" && $tokens[2] == "to") {
+            $startDate = $tokens[1];
+            $endDate = $tokens[3];
             $lines = generateXYForDates($startDate, $endDate);
             $nbOfMeasurements=sizeof($lines[0]);
          }

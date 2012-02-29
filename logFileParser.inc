@@ -111,7 +111,7 @@ function generateXYForDates($fromDate, $toDate)
    $allLines = array();
 
    $lastDate = mktime(0,0,0, $toMonth, $toDay, $toYear);
-   print("last date is $lastDate\n");
+   //print("last date is $lastDate\n");
 
    $currentDay = $fromDay;
    $currentMonth = $fromMonth;

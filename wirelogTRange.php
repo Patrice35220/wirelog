@@ -40,11 +40,38 @@
 
    $nbOfLines=sizeof($lines);
    $nbOfMeasurements=sizeof($lines[0]);
-
-   print("nbOfLines = $nbOfLines\n");
-   print("nbOfMeasurements = $nbOfMeasurements\n");
-   print_r($lines);
 ?>
+         // Create and draw the visualization.
+         options = { curveType: "function", interpolateNulls: true, 
+                     chartArea:{left:50,top:50, width:"90%", height:"75%"},
+<?php
+   print("                     title: '$graphTitle',\n");
+   print("                     legend: 'none',\n");
+   print("                     vAxis: {title:'Temperatures', gridlines:{count:10}}\n");
+   $first = true;
+   print("                         , colors:[");
+   for($i=1; $i<$nbOfLines; $i++) {
+      if ($first) {
+         print("'$colors[$i]'");
+         $first=false;
+      } else {
+         print(",'$colors[$i]'");
+      } 
+   }
+   print("]\n");
+
+   print("          };\n");
+?>
+         // Make a Query to datasource
+         // Create a view (to be able to hide / show measurement)
+<?php
+         // $datasource is set in settings
+         print("         query = new google.visualization.Query('$datasource');\n");
+         print("         query.setQuery('select:from $fromDate to $toDate');\n");
+?>
+         //query.setRefreshInterval(20); // not working
+         // Send the query with a callback function.
+         query.send(handleQueryResponse);
       }
 
       function resendQuery()
