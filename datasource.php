@@ -3,7 +3,7 @@
    include_once("settings.inc");
 
    // Make a table with all measurement from today
-   function answerToday($reqId, $lines) {
+   function answerWithTable($reqId, $lines) {
       $nbOfLines=sizeof($lines);
       $nbOfMeasurements=sizeof($lines[0]);
 
@@ -122,11 +122,15 @@
    //fputs($fd, "select = $select\n");
    //fclose($fd);
 
+   // Supported select :
+   //    - today
+   //    - from dd/mm/yy to dd/mm/yy
+
    // Get sensors values for 'today'
+   $day = date("d");
+   $month = date("m");
+   $year = date("y");
    if ($select == "today") {
-      $day = date("d");
-      $month = date("m");
-      $year = date("y");
       $lines = generateXYForOneDay($day, $month, $year);
 
       $nbOfMeasurements=sizeof($lines[0]);
@@ -134,7 +138,24 @@
          // table has not changed
          $response = answerTableHasNotChanged($reqId, $nbOfMeasurements);
       } else {
-         $response = answerToday($reqId, $lines);
+         $response = answerWithTable($reqId, $lines);
+      }
+      echo $response;
+   } else {
+      $tokens = explode(" ", $select);
+      if (sizeof($tokens) == 4) {
+         if ($token[0] == "from" && $token[2] == "to") {
+            $startDate = $token[1];
+            $endDate = $token[3];
+            $lines = generateXYForDates($startDate, $endDate);
+            $nbOfMeasurements=sizeof($lines[0]);
+         }
+      }
+      if ($sig == $nbOfMeasurements) {
+         // table has not changed
+         $response = answerTableHasNotChanged($reqId, $nbOfMeasurements);
+      } else {
+         $response = answerWithTable($reqId, $lines);
       }
       echo $response;
    }
