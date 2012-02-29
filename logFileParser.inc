@@ -134,7 +134,7 @@ function generateXYForDates($fromDate, $toDate)
          break;
       } else {
          $strDate = date("d/m/y", $currentDate);
-         list($currentDay, $currentMonth, $currentYear) = explode("/", $toDate);
+         list($currentDay, $currentMonth, $currentYear) = explode("/", $strDate);
          //print("looping with $currentDay-$currentMonth-$currentYear\n");
       }
    }
