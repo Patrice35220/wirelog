@@ -156,7 +156,7 @@ function generateXYForDates($fromDate, $toDate)
       }
    }
    // Due to screen resolution, number of measurements is limited to 1200
-   $lines = reduceNumberOfMeasurements($lines, 1200);
+   $allLines = reduceNumberOfMeasurements($allLines, 1200);
    $res = reorganizeDataPerSensor($allLines);
    return $res;
 }
