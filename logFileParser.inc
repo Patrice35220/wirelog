@@ -67,7 +67,8 @@ function reorganizeDataPerSensor($lines)
    return $res;
 } 
 
-function readAllRecordsForOneDay($day, $month, $year) {
+// 0 means no limit in number of lines read in file
+function readAllRecordsForOneDay($day, $month, $year, $limit) {
    $filename = $year."/".$month."/".$day;
    // Results array
    $lines = array();
@@ -108,6 +109,11 @@ function readAllRecordsForOneDay($day, $month, $year) {
             //print("         //sizeof(record) = $tt, expectedNbOfRecords=$expectedNbOfRecords\n");
          }
          $line = fgets($handle);
+         if ($limit != 0) {
+            if (sizeof($lines) > $limit) {
+               break;
+            }
+         }
       }
       fclose($handle);
    }
@@ -115,7 +121,7 @@ function readAllRecordsForOneDay($day, $month, $year) {
 }
 
 function generateXYForOneDay($day, $month, $year) {
-   $lines = readAllRecordsForOneDay($day, $month, $year); 
+   $lines = readAllRecordsForOneDay($day, $month, $year, 0); 
    $res = reorganizeDataPerSensor($lines);
    return $res;
 }
@@ -136,7 +142,7 @@ function generateXYForDates($fromDate, $toDate)
 
    while ($currentDay != "" && $currentMonth != "" && $currentYear != "")
    {
-      $lines = readAllRecordsForOneDay($currentDay, $currentMonth, $currentYear); 
+      $lines = readAllRecordsForOneDay($currentDay, $currentMonth, $currentYear, 0); 
       if (sizeof($lines) > 0) {
          // Merge lines to allLines
          for($i=0; $i<sizeof($lines); $i++) {
@@ -159,6 +165,15 @@ function generateXYForDates($fromDate, $toDate)
    $allLines = reduceNumberOfMeasurements($allLines, 1200);
    $res = reorganizeDataPerSensor($allLines);
    return $res;
+}
+
+function getNumberOfSensorsForDay($day, $month, $year)
+{
+   $lines = array();
+   // read 30 records in file (enough to calculate nb of sensors)
+   $lines = readAllRecordsForOneDay($day, $month, $year, 30); 
+   $res = reorganizeDataPerSensor($lines);
+   return sizeof($res);
 }
 
 function generateXYForAllLog($filename) {

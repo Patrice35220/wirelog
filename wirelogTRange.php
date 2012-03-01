@@ -35,11 +35,9 @@
    include_once("logFileParser.inc");
    include_once("settings.inc");
 
-   // Read data and in order to generate maximum values (TODO maybe to be changed...)
-   $lines = generateXYForDates($fromDate, $toDate);
-
-   $nbOfLines=sizeof($lines);
-   $nbOfMeasurements=sizeof($lines[0]);
+   // Read number of sensors 
+   list($fromDay, $fromMonth, $fromYear) = explode("/", $fromDate);
+   $nbOfSensors = getNumberOfSensorsForDay($fromDay, $fromMonth, $fromYear);
 ?>
          // Create and draw the visualization.
          options = { curveType: "function", interpolateNulls: true, 
@@ -50,7 +48,7 @@
    print("                     vAxis: {title:'Temperatures', gridlines:{count:10}}\n");
    $first = true;
    print("                         , colors:[");
-   for($i=1; $i<$nbOfLines; $i++) {
+   for($i=1; $i<$nbOfSensors; $i++) {
       if ($first) {
          print("'$colors[$i]'");
          $first=false;
@@ -96,13 +94,13 @@
       function clickOnSensor() {
 <?php
       $listOfColumns="[0";
-      for($i=1; $i<$nbOfLines; $i++) {
+      for($i=1; $i<$nbOfSensors; $i++) {
          $listOfColumns = $listOfColumns.",".$i;
       }
       $listOfColumns = $listOfColumns."]";
       print("         var updatedColors = new Array();\n");
       print("         view.setColumns($listOfColumns);\n"); 
-      for($i=1; $i<$nbOfLines; $i++) {
+      for($i=1; $i<$nbOfSensors; $i++) {
          print("         if (document.getElementById('buttonSensor$i').checked == 0) {\n"); 
          print("            view.hideColumns([$i]);\n");
          print("         } else {\n"); 
@@ -124,7 +122,7 @@
       <div id="menu" style="width:200px;height:480px;position:relative;float:right;">
 <?php
    $sensors = getSensorsLabels();
-   for($i=1; $i<$nbOfLines; $i++) {
+   for($i=1; $i<$nbOfSensors; $i++) {
       print("         <p style=\"color:$colors[$i]\"><input id=buttonSensor$i type='checkbox' checked='checked' onclick='clickOnSensor()' />$sensors[$i]</p>\n");
    }
 ?>
