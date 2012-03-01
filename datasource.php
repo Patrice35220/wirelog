@@ -147,6 +147,7 @@
          if ($tokens[0] == "from" && $tokens[2] == "to") {
             $startDate = $tokens[1];
             $endDate = $tokens[3];
+            // number of measurements limited to 1200
             $lines = generateXYForDates($startDate, $endDate);
             $nbOfMeasurements=sizeof($lines[0]);
          }

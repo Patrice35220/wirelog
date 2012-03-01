@@ -17,6 +17,23 @@ function readTemperatureRecord($line) {
    return $res; 
 }
 
+function reduceNumberOfMeasurements($lines, $maxNbOfPoints)
+{
+   $res = array();
+   $totalNbOfMeas = sizeof($lines);
+   if ($totalNbOfMeas <= $maxNbOfPoints) {
+      // No change
+      return $lines;
+   }
+   $ratio = $totalNbOfMeas / $maxNbOfPoints;
+   for($i=0; $i<$totalNbOfMeas; $i++) {
+      if ($i % $ratio == 0) {
+         array_push($res, $lines[$i]);
+      }
+   }
+   return $res;
+}
+
 function reorganizeDataPerSensor($lines)
 {
    $res = array();
@@ -138,6 +155,8 @@ function generateXYForDates($fromDate, $toDate)
          //print("looping with $currentDay-$currentMonth-$currentYear\n");
       }
    }
+   // Due to screen resolution, number of measurements is limited to 1200
+   $lines = reduceNumberOfMeasurements($lines, 1200);
    $res = reorganizeDataPerSensor($allLines);
    return $res;
 }
