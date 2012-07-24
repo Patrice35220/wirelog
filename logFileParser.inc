@@ -75,7 +75,7 @@ function readAllRecordsForOneDay($day, $month, $year, $limit) {
 
    if (!file_exists($filename)) {
       // No file -> no data
-      print("<p>no file</p>\n");
+      print("<p>no file for $day $month $year [filename=$filename]</p>\n");
       return ;
    }
    $handle = fopen($filename, "r");

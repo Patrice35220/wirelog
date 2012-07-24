@@ -141,6 +141,18 @@
          $response = answerWithTable($reqId, $lines);
       }
       echo $response;
+   } else if ($select == "2days") {
+      $yesterdayDate = date("d/m/y", time() - 86400); 
+      $todayDate = date("d/m/y", time());
+      $lines = generateXYForDates($yesterdayDate, $todayDate);
+      $nbOfMeasurements=sizeof($lines[0]);
+      if ($sig == $nbOfMeasurements) {
+         // table has not changed
+         $response = answerTableHasNotChanged($reqId, $nbOfMeasurements);
+      } else {
+         $response = answerWithTable($reqId, $lines);
+      }
+      echo $response;
    } else {
       $tokens = explode(" ", $select);
       if (sizeof($tokens) == 4) {
