@@ -6,8 +6,6 @@
    $day = date("d");
    $month = date("m");
    $year = date("y");
-   $yesterdayDate = date("d/m/y", time() - 86400); 
-   $graphTitle="Wirelog ".$yesterdayDate." - ".$day."/".$month."/".$year;
 ?>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
     <script type="text/javascript">
@@ -27,6 +25,18 @@
    include_once("settings.inc");
 
    $nbOfSensors = getNumberOfSensorsForDay($day, $month, $year);
+   $windowSizeInDays = $_GET["w"];
+   if ($windowSizeInDays!="") {
+      if ($windowSizeInDays > 1) {
+         $startDay=date("d/m/y", time() - (86400 * ($windowSizeInDays-1)));
+         $today=date("d/m/y");
+         $graphTitle="Wirelog ".$startDay." - ".$day."/".$month."/".$year;
+      } else {
+         $graphTitle="Wirelog ".$day."/".$month."/".$year;
+      }
+   } else {
+      $graphTitle="Wirelog ".$day."/".$month."/".$year;
+   }
 
 ?>
          // Create and draw the visualization.
@@ -55,8 +65,18 @@
 <?php
          // $datasource is set in settings
          print("         query = new google.visualization.Query('$datasource');\n");
+         if ($windowSizeInDays!="") {
+            if ($windowSizeInDays > 1) {
+               $startDay=date("d/m/y", time() - (86400 * ($windowSizeInDays-1)));
+               $today=date("d/m/y");
+               print("         query.setQuery('select:from $startDay to $today');\n");
+            } else {
+               print("         query.setQuery('select:today');\n");
+            }
+         } else {
+            print("         query.setQuery('select:today');\n");
+         }
 ?>
-         query.setQuery('select:2days');
          //query.setRefreshInterval(20); // not working
          // Send the query with a callback function.
          query.send(handleQueryResponse);
