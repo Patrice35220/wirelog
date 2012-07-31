@@ -7,6 +7,7 @@
    $month = date("m");
    $year = date("y");
 ?>
+    <script type="text/javascript" src="dist/spin.js"></script>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
     <script type="text/javascript">
       google.load('visualization', '1', {packages: ['corechart']});
@@ -18,8 +19,26 @@
       var data = new google.visualization.DataTable();
       var query;
       var t;
+      var opts = {
+         lines: 12, // The number of lines to draw
+         length: 20, // The length of each line
+         width: 4, // The line thickness
+         radius: 10, // The radius of the inner circle
+         color: '#aaa', // #rgb or #rrggbb
+         speed: 1, // Rounds per second
+         trail: 60, // Afterglow percentage
+         shadow: false, // Whether to render a shadow
+         hwaccel: false, // Whether to use hardware acceleration
+         className: 'spinner', // The CSS class to assign to the spinner
+         zIndex: 2e9, // The z-index (defaults to 2000000000)
+         top: 'auto', // Top position relative to parent in px
+         left: 'auto' // Left position relative to parent in px
+      };
+      var spinner = new Spinner(opts);
 
       function drawVisualization() {
+	  var target = document.getElementById('visualization');
+	  spinner.spin(target);
 <?php
    include_once("logFileParser.inc");
    include_once("settings.inc");
@@ -88,6 +107,7 @@
       }
 
       function handleQueryResponse(response) {
+		 spinner.stop();
          if (response.hasWarning() ||response.isError()) {
             // No data
             t=setTimeout("resendQuery()",60000);
