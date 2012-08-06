@@ -1,17 +1,19 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="de">
+
   <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+
 <?php
    $day = date("d");
    $month = date("m");
    $year = date("y");
+   $graphTitle="Wirelog ".$day."/".$month."/".$year;
 ?>
     <script type="text/javascript" src="dist/spin.js"></script>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-    <script type="text/javascript">
-      google.load('visualization', '1', {packages: ['corechart']});
-    </script>
+    <script type="text/javascript">google.load('visualization', '1', {packages: ['corechart']});</script>
     <script type="text/javascript">
       var view;
       var options;
@@ -59,12 +61,15 @@
 
 ?>
          // Create and draw the visualization.
-         options = { curveType: "function", interpolateNulls: true, 
-                     chartArea:{left:50,top:50, width:"90%", height:"75%"},
+         options = { curveType: "function", interpolateNulls: true, backgroundColor: "#333",
+             titleTextStyle: {color:'#aaa'},
+             hAxis: {textStyle: {color: "#aaa"}},
+             chartArea:{left:50,top:50, width:"90%", height:"75%"},
+
 <?php
    print("                     title: '$graphTitle',\n");
    print("                     legend: 'none',\n");
-   print("                     vAxis: {title:'Temperatures', gridlines:{count:10}}\n");
+   print(" vAxis: {textStyle: {color: '#aaa'}, titleTextStyle: {color:'#aaa'}, title:'Temperatures', gridlines:{count:10}}\n");
    $first = true;
    print("                         , colors:[");
    for($i=1; $i<$nbOfSensors; $i++) {
@@ -101,8 +106,7 @@
          query.send(handleQueryResponse);
       }
 
-      function resendQuery()
-      {
+      function resendQuery() {
          query.send(handleQueryResponse);
       }
 
@@ -146,18 +150,21 @@
       google.setOnLoadCallback(drawVisualization);
     </script>
   </head>
-  <body style="font-family: Arial;border: 0 none;">
-   <div id="container" style="width:840px; height.480px; position:relative;">
-      <div id="visualization" style="width: 640px; height:480px; float:left;"></div>
-      <div id="menu" style="width:200px;height:480px;position:relative;float:right;">
-<?php
-   $sensors = getSensorsLabels();
-   for($i=1; $i<$nbOfSensors; $i++) {
-      print("         <p style=\"color:$colors[$i]\"><input id=buttonSensor$i type='checkbox' checked='checked' onclick='clickOnSensor()' />$sensors[$i]</p>\n");
-   }
+  <body>
+     <article class="left" >
+        <header>
+           <h1>Measurements (OneWire based)</h1>
+        </header>
+        <section id="visualization" class="graph" ></section>
+        <aside id="menu" class="menu">
+<?php $sensors = getSensorsLabels();
+for($i=1; $i<$nbOfSensors; $i++) {
+    print(" <p style=\"color:$colors[$i]\"><input id=buttonSensor$i type='checkbox' checked='checked' onclick='clickOnSensor()' />$sensors[$i]</p>\n");
+}
 ?>
-      </div>
-   </div>
-
+        </aside>
+     <article>
+     <footer>
+     </footer>
   </body>
 </html>
