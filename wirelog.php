@@ -154,6 +154,9 @@
      <article class="left" >
         <header>
            <h1>Measurements (OneWire based)</h1>
+			<form method="get" action="http://patrice.den.free.fr/wirelog/wirelog.php">
+				<p style="padding: 0px 0px 0px 12px;"><br/>Number of past days <input class="days" type="number" name="w" min="1" max="1000"></input></p>
+			</form>
         </header>
         <section id="visualization" class="graph" ></section>
         <aside id="menu" class="menu">
@@ -163,7 +166,7 @@ for($i=1; $i<$nbOfSensors; $i++) {
 }
 ?>
         </aside>
-     <article>
+	</article>
      <footer>
      </footer>
   </body>
