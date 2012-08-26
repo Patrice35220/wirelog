@@ -74,3 +74,13 @@ border: 5px solid #222;
 padding: 10px;
 background: #333;
 }
+
+input.days {
+font-family:Arial,sans-serif;
+color:#FFFFFF;
+font-size:12px;
+border: 3px double #AFAFAF;
+border-radius: 8px;
+background-color: #5F5F5F;
+padding:3px;
+}
