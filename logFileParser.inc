@@ -151,7 +151,7 @@ function generateXYForDates($fromDate, $toDate)
       }
       $currentDate = mktime(0,0,0, $currentMonth, $currentDay, $currentYear);
       //print("current date = $currentDate\n");
-      $currentDate = $currentDate + 86400; 
+      $currentDate = $currentDate + 86400 + 3600;  // one day in the year we have 25 hours... [DST winter]
       //print("currentDate incremented= $currentDate\n");
       if ($currentDate > $lastDate) {
          break;
