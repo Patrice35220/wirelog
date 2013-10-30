@@ -150,14 +150,21 @@ function generateXYForDates($fromDate, $toDate)
          }
       }
       $currentDate = mktime(0,0,0, $currentMonth, $currentDay, $currentYear);
+      $prevCurrentDay= $currentDay;
       //print("current date = $currentDate\n");
-      $currentDate = $currentDate + 86400 + 3600;  // one day in the year we have 25 hours... [DST winter]
+      $currentDate = $currentDate + 86400; 
       //print("currentDate incremented= $currentDate\n");
       if ($currentDate > $lastDate) {
          break;
       } else {
          $strDate = date("d/m/y", $currentDate);
          list($currentDay, $currentMonth, $currentYear) = explode("/", $strDate);
+         if ($currentDay == $prevCurrentDay) {
+            // This could happen, last sunday of October (90000 seconds instead of 86400)
+            $currentDate = $currentDate + 3600; 
+            $strDate = date("d/m/y", $currentDate);
+            list($currentDay, $currentMonth, $currentYear) = explode("/", $strDate);
+         }
          //print("looping with $currentDay-$currentMonth-$currentYear\n");
       }
    }
