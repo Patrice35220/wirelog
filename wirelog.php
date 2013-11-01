@@ -37,6 +37,7 @@
          left: 'auto' // Left position relative to parent in px
       };
       var spinner = new Spinner(opts);
+      var checkboxStatus=new Array();
 
       function drawVisualization() {
 	  var target = document.getElementById('visualization');
@@ -120,6 +121,7 @@
             data = response.getDataTable();
             view = new google.visualization.DataView(data);
             // Process in same way as clickOnSensor button, so, hidden sensors remain hidden
+            setCheckboxState();
             clickOnSensor();
             t=setTimeout("resendQuery()",60000);
          }
@@ -137,20 +139,87 @@
       for($i=1; $i<$nbOfSensors; $i++) {
          print("         if (document.getElementById('buttonSensor$i').checked == 0) {\n"); 
          print("            view.hideColumns([$i]);\n");
+         print("            checkboxStatus[$i]=\"\";\n");
          print("         } else {\n"); 
          print("            // Push back color in colorOption \n");
          print("            updatedColors.push('$colors[$i]');\n");
+         print("            checkboxStatus[$i]=\"yes\";\n");
          print("         }\n"); 
       }
+      // Update the cookie
+      print("         setCookie(\"checkboxStatusCK\",JSON.stringify(checkboxStatus),365)\n");
       print("         options.colors=updatedColors;\n"); 
       print("         var linechart = new google.visualization.LineChart(document.getElementById('visualization')).draw(view, options);\n");
 ?>
       }
 
+      function setCheckboxState() {
+<?php
+      for($i=1; $i<$nbOfSensors; $i++) {
+         print("         if (checkboxStatus[$i] == 'yes') {\n"); 
+         print("            document.getElementById('buttonSensor$i').checked = 1;\n"); 
+         print("         } else {\n"); 
+         print("            document.getElementById('buttonSensor$i').checked = 0;\n"); 
+         print("         }\n"); 
+      }
+?>
+      }
+
+      function setCookie(c_name,value,exdays)
+      {
+         var exdate=new Date();
+         exdate.setDate(exdate.getDate() + exdays);
+         var c_value=escape(value) + ((exdays==null) ? "" : "; expires="+exdate.toUTCString());
+         document.cookie=c_name + "=" + c_value;
+      }
+
+      function getCookie(c_name)
+      {
+         var c_value = document.cookie;
+         var c_start = c_value.indexOf(" " + c_name + "=");
+         if (c_start == -1)
+         {
+            c_start = c_value.indexOf(c_name + "=");
+         }
+         if (c_start == -1)
+         {
+            c_value = null;
+         }
+         else
+         {
+            c_start = c_value.indexOf("=", c_start) + 1;
+            var c_end = c_value.indexOf(";", c_start);
+            if (c_end == -1)
+            {
+               c_end = c_value.length;
+            }
+            c_value = unescape(c_value.substring(c_start,c_end));
+         }
+         return c_value;
+      }
+
+      function getCheckboxStatusFromCookie()
+      {
+         var checkboxStatusCookie=getCookie("checkboxStatusCK");
+         if (checkboxStatusCookie==null || checkboxStatusCookie=="")
+         {
+            // Set all checkboxes to checked
+<?php
+for($i=0; $i<$nbOfSensors; $i++) {
+        print("         checkboxStatus[$i]=\"yes\"\n");
+}
+?>
+            setCookie("checkboxStatusCK",JSON.stringify(checkboxStatus),365);
+         } else {
+            checkboxStatus=JSON.parse(checkboxStatusCookie);
+         } 
+      }
+      
+
       google.setOnLoadCallback(drawVisualization);
     </script>
   </head>
-  <body>
+  <body onload="getCheckboxStatusFromCookie()">
      <article class="left" >
         <header>
            <h1>Measurements (OneWire based)</h1>
@@ -162,7 +231,7 @@
         <aside id="menu" class="menu">
 <?php $sensors = getSensorsLabels();
 for($i=1; $i<$nbOfSensors; $i++) {
-    print(" <p style=\"color:$colors[$i]\"><input id=buttonSensor$i type='checkbox' checked='checked' onclick='clickOnSensor()' />$sensors[$i]</p>\n");
+    print(" <p style=\"color:$colors[$i]\"><input id=buttonSensor$i type='checkbox' onclick='clickOnSensor()' />$sensors[$i]</p>\n");
 }
 ?>
         </aside>
