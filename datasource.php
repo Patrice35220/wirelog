@@ -49,6 +49,30 @@
       return $response;
    }
 
+   // Make an answer with current temperature
+   function answerWithCurrentTemperature($reqId, $temperatureNow, $temperatureMin, $temperatureMax) {
+      // Encode response as JSON 
+      $response = "{version:'0.6'";
+      // set reqId in response if it is present in request
+      if ($reqId != "") {
+         $response = $response.",reqId:'".$reqId."'";
+      }
+      // as hash value, we return the number of measurements
+      // The client will use it when asking live data. It can be used
+      // to detect that new data are available
+      $response = $response.",sig:'2'";
+      // Add columns
+      $response = $response.",status:'ok',table:{cols:[{label:'temperature', type:'number'},{label:'min', type:'number'}, {label:'max', type:'number'}]";
+      // Add one raw, for the result
+      $response = $response.",rows:[";
+      $response = $response."{c:[{v:$temperatureNow}, {v:$temperatureMin}, {v:$temperatureMax}]}";
+      $response = $response.",{c:[{v:4}, {v:5}, {v:6}]}";
+      $response = $response."]"; // end of rows
+      $response = $response."}"; // end of table
+      $response = $response."}"; // end of response
+      return $response;
+   }
+
    function answerTableHasNotChanged($reqId, $nbOfMeasurements) {
 
       // Encode response as JSON 
@@ -125,6 +149,7 @@
    // Supported select :
    //    - today
    //    - from dd/mm/yy to dd/mm/yy
+   //    - temperatureNow
 
    // Get sensors values for 'today'
    $day = date("d");
@@ -140,6 +165,15 @@
       } else {
          $response = answerWithTable($reqId, $lines);
       }
+      echo $response;
+   } else if ($select == "temperatureNow") {
+      // get current temperature, min, max 
+      // Returned array is indexed by "temp", "min", max"
+      $tempMinMax  = generateCurrentTempMinMax($day, $month, $year, $sensorForExtTemp); // TODO get sensor index from settings
+      //$temperatureNow = "5.1";
+      //$temperatureMin = "2.1";
+      //$temperatureMax = "8.7";
+      $response = answerWithCurrentTemperature($reqId, $tempMinMax["temp"], $tempMinMax["min"], $tempMinMax["max"]);
       echo $response;
    } else {
       $tokens = explode(" ", $select);

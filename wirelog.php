@@ -19,7 +19,9 @@
       var options;
       // Create the data table.
       var data = new google.visualization.DataTable();
+      var gaugeData = new google.visualization.DataTable();
       var query;
+      var queryTemp;
       var t;
       var opts = {
          lines: 12, // The number of lines to draw
@@ -36,6 +38,8 @@
          top: 'auto', // Top position relative to parent in px
          left: 'auto' // Left position relative to parent in px
       };
+      var gaugeOptions = {min: 0, max: 280, yellowFrom: 200, yellowTo: 250, redFrom: 250, redTo: 280, minorTicks: 5};
+      
       var spinner = new Spinner(opts);
       var checkboxStatus=new Array();
 
@@ -101,14 +105,22 @@
          } else {
             print("         query.setQuery('select:today');\n");
          }
+
+         // Query to get only current temperature 
+         print("         queryTemp = new google.visualization.Query('$datasource');\n");
+         print("         queryTemp.setQuery('select:temperatureNow');\n");
 ?>
-         //query.setRefreshInterval(20); // not working
          // Send the query with a callback function.
          query.send(handleQueryResponse);
+         queryTemp.send(handleTempQueryResponse);
       }
 
       function resendQuery() {
          query.send(handleQueryResponse);
+      }
+
+      function resendTemperatureQuery() {
+         queryTemp.send(handleTempQueryResponse);
       }
 
       function handleQueryResponse(response) {
@@ -124,6 +136,22 @@
             setCheckboxState();
             clickOnSensor();
             t=setTimeout("resendQuery()",60000);
+         }
+      }
+
+      function handleTempQueryResponse(response) {
+         if (response.hasWarning() ||response.isError()) {
+            // No data
+            t=setTimeout("resendTemperatureQuery()",20000);
+            return;
+         } else {
+            gaugeData = response.getDataTable();
+            //gauge = new google.visualization.Gauge(document.getElementById('gauge_div'));
+            //gauge.draw(gaugeData, gaugeOptions);
+            document.getElementById('gaugeTemp').value=gaugeData.getValue(0, 0);
+            document.getElementById('gaugeMin').value=gaugeData.getValue(0, 1);
+            document.getElementById('gaugeMax').value=gaugeData.getValue(0, 2);
+            t=setTimeout("resendTemperatureQuery()",20000);
          }
       }
 
@@ -234,7 +262,10 @@ for($i=1; $i<$nbOfSensors; $i++) {
     print(" <p style=\"color:$colors[$i]\"><input id=buttonSensor$i type='checkbox' onclick='clickOnSensor()' />$sensors[$i]</p>\n");
 }
 ?>
-        </aside>
+        <p><input id=gaugeTemp type="text"/></p>
+        <p><input id=gaugeMin type="text"/></p>
+        <p><input id=gaugeMax type="text"/></p>
+       
 	</article>
      <footer>
      </footer>

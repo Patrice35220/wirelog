@@ -5,6 +5,8 @@
    }
    $colors = array("black", "slateblue", "red", "orange", "BlueViolet", "green", "blue", "gold", "grey", "yellowGreen", "purple", "salmon", "chartreuse");
 
+   $sensorForExtTemp=5;
+
    $datasource = 'http://patrice.den.free.fr/wirelog/datasource.php';
 ?>
 

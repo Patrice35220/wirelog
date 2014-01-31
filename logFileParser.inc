@@ -126,6 +126,20 @@ function generateXYForOneDay($day, $month, $year) {
    return $res;
 }
 
+function generateCurrentTempMinMax($day, $month, $year, $sensorIndex)
+{
+   // Calculate min max for resForOneSensor
+   $resForOneSensor = array();
+   $tempMinMax = array();
+   $lines = readAllRecordsForOneDay($day, $month, $year, 0); 
+   $res = reorganizeDataPerSensor($lines);
+   $resForOneSensor = $res[$sensorIndex];
+   $tempMinMax["temp"] = end($resForOneSensor); 
+   $tempMinMax["min"] = min($resForOneSensor);
+   $tempMinMax["max"] = max($resForOneSensor);
+   return $tempMinMax;
+}
+
 function generateXYForDates($fromDate, $toDate)
 {
    list($fromDay, $fromMonth, $fromYear) = explode("/", $fromDate);
